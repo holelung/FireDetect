@@ -24,9 +24,7 @@ const AppScreen = () => {
   const [city, setCity] = useState("Loading...");
   const [days, setDays] = useState([]);
 
-  var date = moment()
-    .utcOffset('+09:00')
-    .format('hh:mm:ss');
+  var date = moment().utcOffset('+09:00').format('YYYY-MM-DD hh:mm:ss');
 
   const getWeather = async() => {
     const {granted} = await Location.requestForegroundPermissionsAsync(); 
@@ -36,16 +34,10 @@ const AppScreen = () => {
     const {coords:{latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy:5});
     const location = await Location.reverseGeocodeAsync({latitude, longitude}, {useGoogleMaps:false});
     setCity(location[0].city);
-    const response = await  fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
+    const response = await  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
     const json = await response.json();
-    //setDays(json.list);
-    setDays(
-      json.list.filter((weather) => {
-        if (weather.dt_txt.includes(date)) {
-          return weather;
-        }
-      })
-    );
+    setDays([json]);
+    
   };
   useEffect(() => {
     getWeather(); 
@@ -56,6 +48,7 @@ const AppScreen = () => {
     <View style={styles.container}>
        <StatusBar style="dark" />
       <View style={styles.weatherBox}>
+        <Text style={styles.weatherText}>{city}</Text>
         <View styles={styles.weather}>
           {days.length === 0 ?(
             <View style={styles.day}>
@@ -68,10 +61,10 @@ const AppScreen = () => {
           ):(
             days.map((day, index) => 
               <View key={index} style={styles.day}>
-                <Text style={styles.today}>{(day.dt_txt).slice(5, 7)}월 {(day.dt_txt).slice(8, 10)}일 {(day.dt_txt).slice(11, 13)}시</Text>
+                <Text style={styles.today}>{(date).slice(5, 7)}월 {(date).slice(8, 10)}일 {(date).slice(11, 13)}시</Text>
                 <View style={styles.tempView}>
                   <Text style={styles.temp}>{parseFloat(day.main.temp).toFixed(1)}</Text>
-                  <Fontisto name={icons[day.weather[0].main] } size={58 } color="black" />
+                  <Fontisto name={icons[day.weather[0].main] } size={58 } color="white" />
                 </View>
                 <Text style={styles.description}>{day.weather[0].main}</Text>
                 <Text style={styles.tinyText}>{day.weather[0].description}</Text>
@@ -81,11 +74,18 @@ const AppScreen = () => {
         </View>
         <TouchableOpacity ><Text style={styles.smallButtonText}>위치설정</Text></TouchableOpacity>
       </View>
-
-      <TouchableOpacity style={styles.largeButton2}>
-        <Text style={styles.largeButtonText}>화재감지 여부</Text>
-        <Text style={styles.smallButtonText}>작동 on/off</Text>
-      </TouchableOpacity>
+      <View style={styles.largeButton2}>
+        <View style={styles.largeButton2Header}>
+          <Text style={styles.largeButton2Text}>화재감지 여부</Text>
+          <TouchableOpacity>
+            <Text style={styles.smallButton2Text}>작동 on/off</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.isFire}>
+            <Text style={styles.isFireText}>화재감지 여부: 화재아님</Text>
+        </View>
+      </View>      
+      
 
       <View style={styles.grid}>
         <TouchableOpacity style={styles.gridButton}>
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
   },
   weatherBox: {
     flex: 2,
+    color: 'white',
     backgroundColor: 'blue', // Replace with your actual button color
     padding: 20,
     borderRadius: 10,
@@ -133,14 +134,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   weather: {
-
+    color: 'white',
   },
+  weatherText: {
+    color: 'white',
+  },
+
    largeButton2: {
     flex: 2,
     backgroundColor: 'blue', // Replace with your actual button color
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
+  },
+  largeButton2Header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -153,10 +160,29 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
   },
+  largeButton2Text: {
+    color: 'white',
+    fontSize: 18,
+    justifyContent: "flex-start"
+  },
+  smallButton2Text: {
+    color: 'white',
+    fontSize: 14,
+  },
   locationButtonText: {
     color: 'white',
     fontSize: 14,
   },
+  isFire: {
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent:"center",
+  },
+  isFireText: {
+    color: 'white',
+    fontSize: 28,
+  },
+
   grid: {
     flex: 5,
     flexDirection: 'row',
@@ -201,7 +227,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
-  
+  today:{
+    color: 'white',
+  },
+  tempView: {
+    
+  },
+  temp: {
+    color: 'white',
+  },
+  description: {
+    color: 'white',
+  },
+  tinyText: {
+    color: 'white',
+  },
 
 });
 
