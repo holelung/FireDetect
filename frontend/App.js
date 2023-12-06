@@ -22,7 +22,7 @@ const icons = {
   Thunderstorm: "lightning",
 } 
 
-const API_URL = 'http://172.20.10.4:3002/api/';
+const API_URL = 'http://54.180.96.188:3000/api/';
 
 const AppScreen = () => {
   const [temperatureSensor, setTemperatureSensor] = useState([]);

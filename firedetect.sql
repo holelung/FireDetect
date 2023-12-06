@@ -1,15 +1,4 @@
-create table sensor(
-	id int auto_increment primary key, 
-	sensor_name varchar(100),
-    analog_value int,
-    digital_value boolean
-);
-alter table sensor add rgb_control varchar(20);
-
-select * from sensor;
-
 /* 센서마다 Table 생성*/
-
 -- 온도 센서 
 create table temperature(
 	id int auto_increment primary key,
@@ -38,12 +27,18 @@ create table infrared(
 create table led(
 	id int auto_increment primary key,
     value varchar(20),
-    update_time timestamp
+    update_time timestamp default current_timestamp
 );
 -- 부저  
 create table buzzer(
 	id int auto_increment primary key,
     value boolean,
-    update_time timestamp
+    update_time timestamp default current_timestamp
+);
+-- 화재감지
+create table is_fire(
+	id int auto_increment primary key,
+    value varchar(20),
+    update_time timestamp default current_timestamp
 );
 
