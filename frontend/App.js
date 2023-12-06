@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator, Linking, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Fontisto } from "@expo/vector-icons";
 import call from 'react-native-phone-call'
@@ -22,36 +22,90 @@ const icons = {
   Thunderstorm: "lightning",
 } 
 
-const API_URL = 'http://192.168.0.15:3002/api/';
+const API_URL = 'http://172.20.10.4:3002/api/';
 
 const AppScreen = () => {
-  const [sensorData, setSensorData] = useState([]);
+  const [temperatureSensor, setTemperatureSensor] = useState([]);
+  const [brightSensor, setBrightSensor] = useState([]);  
+  const [gasSensor, setGasSensor] = useState([]);  
+  const [infraredSensor, setInfraredSensor] = useState([]);
+  const [buzzer, setBuzzer] = useState([]);
+  const [isFire, setIsFire] = useState([]);
+  const [led, setLed] = useState([]); 
   const [city, setCity] = useState("Loading...");
   const [days, setDays] = useState([]);
 
   var date = moment().utcOffset('+09:00').format('YYYY-MM-DD hh:mm:ss');
 
-  //센서 데이터 불러오기
-const fetchData = async () => {
-  try {
-    // '온도', '조도', '가스', '적외선'에 해당하는 데이터를 가져옵니다.
-    const responses = await Promise.all([
-      axios.get(`${API_URL}getTemperature`),
-      axios.get(`${API_URL}getBrightness`),
-      axios.get(`${API_URL}getGas`),
-      axios.get(`${API_URL}getInfrared`)
-    ]);
+  useEffect(() => {
+    getWeather();
+    getData();
 
-    setSensorData({
-      temperature: responses[0].data,
-      brightness: responses[1].data,
-      gas: responses[2].data,
-      infrared: responses[3].data
-    });
-  } catch (error) {
-    console.error('Data fetch error:', error);
+    const interval = setInterval(getData, 3000); // 5초마다 데이터 갱신
+    return () => clearInterval(interval); 
+  }, []);
+  //센서 데이터 불러오기
+  const getData = async () => {
+    try {
+      // '온도', '조도', '가스', '적외선'에 해당하는 데이터를 가져옵니다.
+      const responses = await Promise.all([
+        axios.get(`${API_URL}getTemperature`),
+        axios.get(`${API_URL}getBrightness`),
+        axios.get(`${API_URL}getGas`),
+        axios.get(`${API_URL}getInfrared`),
+        axios.get(`${API_URL}led`),
+        axios.get(`${API_URL}buzzer`),
+        axios.get(`${API_URL}isFire`)
+      ]);
+      
+      setTemperatureSensor(responses[0].data);
+      setBrightSensor(responses[1].data);
+      setGasSensor(responses[2].data);
+      //boolean값 stringdata로 변환
+      if(responses[3].data.value == 0){
+        responses[3].data.value = "감지 안됨";
+        setInfraredSensor(responses[3].data);
+      }else{
+        responses[3].data.value = "모션 감지";
+        setInfraredSensor(responses[3].data);
+      }
+      setLed(responses[4].data);
+      
+      if(responses[5].data.value == '0'){
+        responses[5].data.value = "OFF";
+        setBuzzer(responses[5].data);
+      }else if(responses[5].data.value == '1'){
+        responses[5].data.value = "ON";
+        setBuzzer(responses[5].data);
+      }
+      
+      setIsFire(responses[6].data);
+    } catch (error) {
+      console.error('Data fetch error:', error);
+    }
+  };
+
+
+  const controlBuzzer = async(buzzer) => {
+    try{
+      if(buzzer == "ON"){
+        buzzer = 0;
+        const response = await axios.post(`${API_URL}ctrBuzzer`, {buzzer});
+
+        console.log('부저 제어 성공:', response.data.message);
+        Alert.alert(response.data.message);
+        
+      }else if(buzzer == "OFF"){
+        buzzer = 1;
+        const response = await axios.post(`${API_URL}ctrBuzzer`, {buzzer});
+
+        console.log('부저 제어 성공:', response.data.message);
+        Alert.alert(response.data.message);
+      }
+    }catch (error) {
+      console.error('Data fetch error:', error);
+    }
   }
-};
 
   // 날씨 받기
   const getWeather = async() => {
@@ -67,12 +121,7 @@ const fetchData = async () => {
     setDays([json]);
     
   };
-  useEffect(() => {
-    getWeather();
-    fetchData();
-    const interval = setInterval(fetchData, 10000); // 10초마다 데이터 갱신
-    return () => clearInterval(interval); 
-  }, []);
+ 
 
   //전화 정보
   const args = {
@@ -142,28 +191,28 @@ const fetchData = async () => {
           </TouchableOpacity>
         </View>
         <View style={styles.isFire}>
-            <Text style={styles.isFireText}>화재감지 여부: 화재아님</Text>
+            <Text style={styles.isFireText}>화재감지 여부: {isFire.value}</Text>
         </View>
       </View>      
         
       <View style={styles.grid}>
         <TouchableOpacity style={styles.gridButton}>
-          <Text style={styles.gridButtonText}>온도 : {sensorData.temperature}</Text>
+          <Text style={styles.gridButtonText}>온도 : {temperatureSensor.value}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.gridButton}>
-          <Text style={styles.gridButtonText}>조도 : {sensorData.brightness}</Text>
+          <Text style={styles.gridButtonText}>조도 : {brightSensor.value}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.gridButton}>
-          <Text style={styles.gridButtonText}>가스 : {sensorData.gas}</Text>
+          <Text style={styles.gridButtonText}>가스 : {gasSensor.value}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.gridButton}>
-          <Text style={styles.gridButtonText}>적외선 : {sensorData.infrared}</Text>
+          <Text style={styles.gridButtonText}>적외선 : {infraredSensor.value}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.footerButtons}>
-        <TouchableOpacity style={[styles.footerButton, styles.leftButton]}>
-          <Text style={styles.footerButtonText}>부재 on/off</Text>
+        <TouchableOpacity style={[styles.footerButton, styles.leftButton]} onPress={() => controlBuzzer(buzzer.value)}>
+          <Text style={styles.footerButtonText}>부저상태: {buzzer.value}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.footerButton, styles.rightButton]} onPress={() => makePhoneCall(args.number, args.prompt)}>
           <Text style={styles.footerButtonText}>화재 신고</Text>

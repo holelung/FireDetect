@@ -5,6 +5,7 @@ const serialPort  = require('serialport');
 const axios = require('axios');
 
 
+
 const app = express();
 const port = 3002;
 
@@ -34,6 +35,7 @@ const parsers = serialPort.parsers;
 // com6.on('open', function () {
 //     console.log('open serial communication');
 // })
+app.use(express.json());
 
 app.get("/", function (req, res) {
     console.log('Arduino로부터 요청 받음');
@@ -52,9 +54,14 @@ app.get('/api/update', (req, res) => {
   });
 });
 
+
+
+
+//센서값 불러오기 
+
 // 온도 데이터 가져오기
 app.get('/api/getTemperature', (req, res) => {
-    db.query('SELECT temperature FROM sensor ORDER BY id DESC LIMIT 1', (error, results) => {
+    db.query('SELECT * FROM temperature ORDER BY id DESC LIMIT 1', (error, results) => {
         if (error) {
             return res.status(500).send({ message: "서버 에러 발생" });
         }
@@ -64,7 +71,7 @@ app.get('/api/getTemperature', (req, res) => {
 
 // 조도 데이터 가져오기
 app.get('/api/getBrightness', (req, res) => {
-    db.query('SELECT brightness FROM sensor ORDER BY id DESC LIMIT 1', (error, results) => {
+    db.query('SELECT * FROM bright ORDER BY id DESC LIMIT 1', (error, results) => {
         if (error) {
             return res.status(500).send({ message: "서버 에러 발생" });
         }
@@ -74,7 +81,7 @@ app.get('/api/getBrightness', (req, res) => {
 
 // 가스 데이터 가져오기
 app.get('/api/getGas', (req, res) => {
-    db.query('SELECT gas FROM sensor ORDER BY id DESC LIMIT 1', (error, results) => {
+    db.query('SELECT * FROM gas ORDER BY id DESC LIMIT 1', (error, results) => {
         if (error) {
             return res.status(500).send({ message: "서버 에러 발생" });
         }
@@ -84,14 +91,54 @@ app.get('/api/getGas', (req, res) => {
 
 // 적외선 데이터 가져오기
 app.get('/api/getInfrared', (req, res) => {
-    db.query('SELECT infrared FROM sensor ORDER BY id DESC LIMIT 1', (error, results) => {
+    db.query('SELECT * FROM infrared ORDER BY id DESC LIMIT 1', (error, results) => {
         if (error) {
             return res.status(500).send({ message: "서버 에러 발생" });
         }
         res.status(200).json(results[0]);
     });
 });
+// led
+app.get('/api/led', (req, res) => {
+    db.query('SELECT * FROM led ORDER BY id DESC LIMIT 1', (error, results) => {
+        if (error) {
+            return res.status(500).send({ message: "서버 에러 발생" });
+        }
+        
+        res.status(200).json(results[0]);
+    });
+}); 
+//부저
+app.get('/api/buzzer', (req, res) => {
+    db.query('SELECT * FROM buzzer ORDER BY id DESC LIMIT 1', (error, results) => {
+        if (error) {
+            return res.status(500).send({ message: "서버 에러 발생" });
+        }
+        
+        res.status(200).json(results[0]);
+    });
+});
+//화재감지
+app.get('/api/isFire', (req, res) => {
+    db.query('SELECT * FROM is_fire ORDER BY id DESC LIMIT 1', (error, results) => {
+        if (error) {
+            return res.status(500).send({ message: "서버 에러 발생" });
+        }
+        
+        res.status(200).json(results[0]);
+    });
+});
 
-
+app.post('/api/ctrBuzzer', (req, res) => {
+    const value = req.body.buzzer;
+    console.log(value);
+    db.query('INSERT INTO buzzer (value) VALUES (?)', [value], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send({ message: '부저 제어 실패', error });
+        }
+        return res.status(201).send({ message: '부저 제어 성공' });
+    })
+});
 
 app.listen(port, () => console.log("3002포트에서 대기 중..."));
