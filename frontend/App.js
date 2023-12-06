@@ -63,10 +63,10 @@ const AppScreen = () => {
       setGasSensor(responses[2].data);
       //boolean값 stringdata로 변환
       if(responses[3].data.value == 0){
-        responses[3].data.value = "감지 안됨";
+        responses[3].data.value = "모션 감지";
         setInfraredSensor(responses[3].data);
       }else{
-        responses[3].data.value = "모션 감지";
+        responses[3].data.value = "감지 안됨";
         setInfraredSensor(responses[3].data);
       }
       setLed(responses[4].data);
