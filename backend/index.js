@@ -42,17 +42,17 @@ app.get("/", function (req, res) {
     res.send("안녕하세요!");
 });
 
-//센서값 저장
-app.get('/api/update', (req, res) => {
-  const sensorValue = req.query.value;
+// //센서값 저장
+// app.get('/api/update', (req, res) => {
+//   const sensorValue = req.query.value;
 
-  // DB에 센서 값 저장
-  db.query('INSERT INTO sensor VALUES (?)', [sensorValue], (err, result) => {
-    if (err) throw err;
-    console.log('Data inserted');
-    res.send('Data received');
-  });
-});
+//   // DB에 센서 값 저장
+//   db.query('INSERT INTO sensor VALUES (?)', [sensorValue], (err, result) => {
+//     if (err) throw err;
+//     console.log('Data inserted');
+//     res.send('Data received');
+//   });
+// });
 
 
 

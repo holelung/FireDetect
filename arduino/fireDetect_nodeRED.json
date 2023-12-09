@@ -1,0 +1,246 @@
+[
+    {
+        "id": "b80dcd6c6dc3f7aa",
+        "type": "tab",
+        "label": "플로우 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "469be45af337f2f0",
+        "type": "mqtt in",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "",
+        "topic": "MJC/temp",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "10b73762f548e963",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 400,
+        "y": 260,
+        "wires": [
+            [
+                "d385486622a5aa62"
+            ]
+        ]
+    },
+    {
+        "id": "d385486622a5aa62",
+        "type": "function",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "Send to MySQL",
+        "func": "msg.topic = \"INSERT INTO temperature(value,status)\" + \n            \"VALUE ('\"+msg.payload.lm35Val+\"','\"+msg.payload.lm35St+\"');\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 320,
+        "wires": [
+            [
+                "5a71d2a3df4426c0"
+            ]
+        ]
+    },
+    {
+        "id": "5a71d2a3df4426c0",
+        "type": "mysql",
+        "z": "b80dcd6c6dc3f7aa",
+        "mydb": "d142c2d5a6832fee",
+        "name": "Database fire_detect",
+        "x": 1080,
+        "y": 380,
+        "wires": [
+            [
+                "71717a98d1c07dc4"
+            ]
+        ]
+    },
+    {
+        "id": "71717a98d1c07dc4",
+        "type": "debug",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1560,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e06f4192be028553",
+        "type": "mqtt in",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "",
+        "topic": "MJC/infrared",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "10b73762f548e963",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 390,
+        "y": 380,
+        "wires": [
+            [
+                "fede889720871e92"
+            ]
+        ]
+    },
+    {
+        "id": "fede889720871e92",
+        "type": "function",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "Send to MySQL",
+        "func": "msg.topic = \"INSERT INTO infrared(value,status)\" +\n         \"VALUE ('\" + msg.payload.infraredVal + \"','\" + msg.payload.infraredSt + \"');\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 420,
+        "wires": [
+            [
+                "5a71d2a3df4426c0"
+            ]
+        ]
+    },
+    {
+        "id": "2f3c13bed0dc1bdd",
+        "type": "mqtt in",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "",
+        "topic": "MJC/light",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "10b73762f548e963",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 400,
+        "y": 480,
+        "wires": [
+            [
+                "658b87a97795c146"
+            ]
+        ]
+    },
+    {
+        "id": "658b87a97795c146",
+        "type": "function",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "Send to MySQL",
+        "func": "msg.topic = \"INSERT INTO bright(value,status)\" + \n            \"VALUE ('\"+msg.payload.lightVal+\"','\"+msg.payload.lightSt+\"');\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 540,
+        "wires": [
+            [
+                "5a71d2a3df4426c0"
+            ]
+        ]
+    },
+    {
+        "id": "b6a91cc0542f4929",
+        "type": "mqtt in",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "",
+        "topic": "MJC/carbon",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "10b73762f548e963",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 390,
+        "y": 600,
+        "wires": [
+            [
+                "e07869c115500b86"
+            ]
+        ]
+    },
+    {
+        "id": "e07869c115500b86",
+        "type": "function",
+        "z": "b80dcd6c6dc3f7aa",
+        "name": "Send to MySQL",
+        "func": "msg.topic = \"INSERT INTO gas(value,status)\" +\n         \"VALUE ('\" + msg.payload.carbonVal + \"','\" + msg.payload.carbonSt + \"');\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 640,
+        "wires": [
+            [
+                "5a71d2a3df4426c0"
+            ]
+        ]
+    },
+    {
+        "id": "10b73762f548e963",
+        "type": "mqtt-broker",
+        "name": "value",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d142c2d5a6832fee",
+        "type": "MySQLdatabase",
+        "name": "fire_detect",
+        "host": "localhost",
+        "port": "3306",
+        "db": "fire_detect",
+        "tz": "",
+        "charset": "UTF8"
+    }
+]
