@@ -22,7 +22,7 @@ const icons = {
   Thunderstorm: "lightning",
 } 
 
-const API_URL = 'http://54.180.96.188:3000/api/';
+const API_URL = 'http://15.164.171.14:4000/api/';
 
 const AppScreen = () => {
   const [temperatureSensor, setTemperatureSensor] = useState([]);
@@ -71,13 +71,9 @@ const AppScreen = () => {
       }
       setLed(responses[4].data);
       
-      if(responses[5].data.value == '0'){
-        responses[5].data.value = "OFF";
-        setBuzzer(responses[5].data);
-      }else if(responses[5].data.value == '1'){
-        responses[5].data.value = "ON";
-        setBuzzer(responses[5].data);
-      }
+      
+      setBuzzer(responses[5].data);
+      
       
       setIsFire(responses[6].data);
     } catch (error) {
@@ -88,15 +84,15 @@ const AppScreen = () => {
 
   const controlBuzzer = async(buzzer) => {
     try{
-      if(buzzer == "ON"){
-        buzzer = 0;
+      if(buzzer == "On"){
+        buzzer = "Off";
         const response = await axios.post(`${API_URL}ctrBuzzer`, {buzzer});
 
         console.log('부저 제어 성공:', response.data.message);
         Alert.alert(response.data.message);
         
-      }else if(buzzer == "OFF"){
-        buzzer = 1;
+      }else if(buzzer == "Off"){
+        buzzer = "On";
         const response = await axios.post(`${API_URL}ctrBuzzer`, {buzzer});
 
         console.log('부저 제어 성공:', response.data.message);
@@ -183,7 +179,7 @@ const AppScreen = () => {
         </View>
         <TouchableOpacity ><Text style={styles.smallButtonText}>위치설정</Text></TouchableOpacity>
       </View>
-      <View style={styles.largeButton2}>
+      <View style={{...styles.largeButton2, backgroundColor: isFire =="Fire!!!!" ? 'red' : 'blue'}}>
         <View style={styles.largeButton2Header}>
           <Text style={styles.largeButton2Text}>화재감지 여부</Text>
           <TouchableOpacity>
@@ -191,7 +187,7 @@ const AppScreen = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.isFire}>
-            <Text style={styles.isFireText}>화재감지 여부: {isFire.value}</Text>
+            <Text style={styles.isFireText}>집 상태: {isFire.value}</Text>
         </View>
       </View>      
         
