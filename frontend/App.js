@@ -179,7 +179,7 @@ const AppScreen = () => {
         </View>
         <TouchableOpacity ><Text style={styles.smallButtonText}>위치설정</Text></TouchableOpacity>
       </View>
-      <View style={{...styles.largeButton2, backgroundColor: isFire =="Fire!!!!" ? 'red' : 'blue'}}>
+      <View style={{...styles.largeButton2, backgroundColor: isFire.value =="Fire!!!!" ? 'red' : 'blue'}}>  
         <View style={styles.largeButton2Header}>
           <Text style={styles.largeButton2Text}>화재감지 여부</Text>
           <TouchableOpacity>
