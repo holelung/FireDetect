@@ -45,4 +45,9 @@ DB 구성
 |1|Safe|2023-12-13 02:18:33|Null|
 
 
+# 통신 구성
+<img width="592" alt="image" src="https://github.com/holelung/FireDetect/assets/66117028/3f3f6cb0-7520-4957-ac23-b58fd7674cec">
+<img width="526" alt="image" src="https://github.com/holelung/FireDetect/assets/66117028/baab4d73-aead-475c-a0fa-e40c16616539">
+
+
 
