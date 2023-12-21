@@ -11,6 +11,6 @@ https://drive.google.com/file/d/1t8_V3WLzOsnDpPyPPkQDLc5SkuuRTsln/view?usp=shari
 
 앱 화면 
 =======
-<img src="/path/to/img.jpg" width="40%" height="30%" title="앱 화면" alt="./images/firedetectapp.jpeg"></img>
+<img src="/path/to/img.jpg" width="50%" height="50%" title="앱 화면" alt="/images/firedetectapp.jpeg"></img>
 
 
