@@ -7,3 +7,8 @@ https://expo.dev//accounts/ciker/projects/FireDetect/builds/28d66e71-519d-4203-a
 
 2. Google Drive
 https://drive.google.com/file/d/1t8_V3WLzOsnDpPyPPkQDLc5SkuuRTsln/view?usp=sharing
+
+
+앱 화면 
+=======
+
